@@ -6,7 +6,11 @@ module org.example.flappybird_game {
     requires net.synedra.validatorfx;
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
+    requires static lombok;
+    requires java.desktop;
 
     opens org.example.flappybird_game to javafx.fxml;
     exports org.example.flappybird_game;
+    exports org.example.flappybird_game.FxControllers;
+    opens org.example.flappybird_game.FxControllers to javafx.fxml;
 }
