@@ -8,6 +8,7 @@ module org.example.flappybird_game {
     requires com.almasb.fxgl.all;
     requires static lombok;
     requires java.desktop;
+    requires jdk.xml.dom;
 
     opens org.example.flappybird_game to javafx.fxml;
     exports org.example.flappybird_game;

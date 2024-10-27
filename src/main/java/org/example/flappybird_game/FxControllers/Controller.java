@@ -7,88 +7,122 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
-import org.example.flappybird_game.Utils.Bird;
-import org.example.flappybird_game.Utils.Logic;
+import javafx.scene.text.Text;
+import lombok.Getter;
+import lombok.Setter;
+import org.example.flappybird_game.Character.Bird;
+import org.example.flappybird_game.Utils.Obstacle;
 
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+
+@Getter
+@Setter
 
 public class Controller implements Initializable {
 
     AnimationTimer gameLoop;
-
+    @FXML
+    public Text scoreText;
     @FXML
     private AnchorPane anchorPane;
     @FXML
     private Rectangle rectangleBird;
-    Bird bird = new Bird(0.02, 0, 75);
-    private int i = 0;
+    private double deltaY = 0.02;
+    private int gravity = 0;
+    private double time = 0;
+    private int scoreVal = 0;
+
+    private boolean pipePassed = false;
+    Bird bird;
+    Obstacle obstacle;
+    ArrayList<Rectangle> obstacles = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        int jump = 20;
+        bird = new Bird(deltaY, jump, rectangleBird);
+        obstacle = new Obstacle(anchorPane, 400, 600);;
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 update();
             }
         };
+        load();
         gameLoop.start();
     }
+
 
     public void keyPressed(KeyEvent keyEvent) {
         System.out.println("SPACE");
         if(keyEvent.getCode() == KeyCode.SPACE)
         {
-            fly(bird);
+            bird.fly();
+            gravity = 0;
+            //System.out.println(anchorPane.getWidth() + " " + anchorPane.getHeight());
         }
     }
 
-    public void fly(Bird bird)
+    public void load()
     {
-        if (rectangleBird.getLayoutY() + rectangleBird.getY() <= bird.getJump())
-        {
-            moveBirdY(-(rectangleBird).getLayoutY() + rectangleBird.getY());
-            bird.setTime(0);
-        }
-        else {
-            moveBirdY(-bird.getJump());
-            bird.setTime(0);
-        }
-    }
-
-
-    public void moveBirdY(double deltaY)
-    {
-        rectangleBird.setY(rectangleBird.getY() + deltaY);
+        obstacles.addAll(obstacle.createObstacles());
+        scoreText.setText("Score: " + scoreVal);
     }
 
 
     private void update()
     {
-        bird.setTime(bird.getTime()+1);
-        moveBirdY(bird.getMoveDeltaY() * bird.getTime());
+        gravity++;
+        time++;
+        bird.move(deltaY * gravity);
 
-        if (isBirdDead()){
-            resetBird();
+        obstacle.moveObstacles(obstacles);
+        if(time % 250 == 0)
+        {
+            System.out.println("MOVE");
+            obstacles.addAll(obstacle.createObstacles());
+            pipePassed = false;
         }
-    }
 
+        if (!pipePassed && rectangleBird.getX() + rectangleBird.getLayoutX() > obstacles.getFirst().getX() + obstacles.getFirst().getLayoutX())
+        {
+            scoreVal++;
+            scoreText.setText("Score: " + scoreVal);
+            pipePassed = true;
+        }
 
-    private boolean isBirdDead()
-    {
-        double birdY = rectangleBird.getY() + rectangleBird.getLayoutY();
-        return birdY >= anchorPane.getHeight();
+        if(obstacle.isDead(obstacles, rectangleBird, anchorPane)){
+            resetBird();
+            pipePassed = true;
+        }
+
+        gameOver();
     }
 
     private void resetBird()
     {
          rectangleBird.setY(0);
-         bird.setTime(0);
+         anchorPane.getChildren().removeAll(obstacles);
+         obstacles.clear();
+         time = 0;
+         gravity = 0;
+         bird = new Bird(deltaY, bird.getJump(), rectangleBird);
+         scoreVal = 0;
+         scoreText.setText("Score: " + scoreVal);
+         pipePassed = false;
     }
 
 
-
-
-
+    private void gameOver()
+    {
+        if (scoreVal >= 10)
+        {
+            gameLoop.stop();
+            scoreText.setText("Game Over, You've Won!");
+        }
+    }
 }

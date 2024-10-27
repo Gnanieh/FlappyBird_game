@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#keyPressed" prefHeight="600" prefWidth="400" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.flappybird_game.FxControllers.Controller">
+   <children>
+      <Rectangle fx:id="rectangleBird" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="36.0" layoutX="185.0" layoutY="106.0" stroke="BLACK" strokeType="INSIDE" width="37.0" />
+      <Text fx:id="scoreText" layoutX="22.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" underline="true" wrappingWidth="182.0">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>
