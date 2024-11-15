@@ -52,6 +52,7 @@ public class Obstacle extends Collision {
             if (obstacle.getX() <= -obstacle.getWidth()) {
                 anchorPane.getChildren().remove(obstacle);
                 iterator.remove();
+                System.out.println("DELETE");
             }
         }
 

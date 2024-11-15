@@ -35,6 +35,7 @@ public class Controller implements Initializable {
     private int gravity = 0;
     private double time = 0;
     private int scoreVal = 0;
+    private final int jump = 20;
 
     private boolean pipePassed = false;
     Bird bird;
@@ -43,7 +44,6 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        int jump = 20;
         bird = new Bird(deltaY, jump, rectangleBird);
         obstacle = new Obstacle(anchorPane, 400, 600);;
         gameLoop = new AnimationTimer() {
@@ -110,7 +110,7 @@ public class Controller implements Initializable {
          obstacles.clear();
          time = 0;
          gravity = 0;
-         bird = new Bird(deltaY, bird.getJump(), rectangleBird);
+         bird = new Bird(deltaY, jump, rectangleBird);
          scoreVal = 0;
          scoreText.setText("Score: " + scoreVal);
          pipePassed = false;
