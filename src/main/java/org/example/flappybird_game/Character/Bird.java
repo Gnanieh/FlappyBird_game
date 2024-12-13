@@ -13,10 +13,13 @@ public class Bird {
     private int jump;
     private Rectangle bird;
 
+    
+
     public Bird(double moveDeltaY, int jump, Rectangle bird) {
         this.deltaY = moveDeltaY;
         this.jump = jump;
         this.bird = bird;
+        this.bird.setStyle("-fx-fill: linear-gradient(to top, darkmagenta, magenta)");
     }
 
     public void fly()
@@ -34,5 +37,6 @@ public class Bird {
     {
         bird.setY(bird.getY() + deltaY);
     }
-
+//pridetų kokių nors power up'ų/ar ko nors panašaus kur būtų galima naudoti polimorfizmą. (game mechanics)
+    
 }

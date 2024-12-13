@@ -6,15 +6,14 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 
 public abstract class Collision {
-    public boolean collisionDetection(ArrayList<Rectangle> obstacles, Rectangle bird, AnchorPane pane)
+    protected boolean detectCollisionWithObstacles(ArrayList<Rectangle> obstacles, Rectangle bird, AnchorPane pane)
     {
-        for (Rectangle rectangle : obstacles)
-        {
-            if(rectangle.getBoundsInParent().intersects(bird.getBoundsInParent()) || bird.getY() > pane.getHeight())
-            {
+        for (Rectangle rectangle : obstacles) {
+            if (rectangle.getBoundsInParent().intersects(bird.getBoundsInParent()) || bird.getY() > pane.getHeight()) {
                 return true;
             }
         }
+
         return  false;
     }
 }

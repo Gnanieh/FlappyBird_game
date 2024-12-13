@@ -11,12 +11,15 @@ import javafx.scene.text.Text;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.flappybird_game.Character.Bird;
+import org.example.flappybird_game.Listeners.ScoreListener;
+import org.example.flappybird_game.Managers.ScoreManager;
 import org.example.flappybird_game.Utils.Obstacle;
 
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
 
 
 @Getter
@@ -31,20 +34,28 @@ public class Controller implements Initializable {
     private AnchorPane anchorPane;
     @FXML
     private Rectangle rectangleBird;
+
+
     private double deltaY = 0.02;
     private int gravity = 0;
     private double time = 0;
-    private int scoreVal = 0;
-    private final int jump = 20;
+    private double interval = 350;
+
+    private static final int INTERVAL_DECREMENT = 10;
+    private final int JUMP = 20;
+    private static double MIN_INTERVAL = 150;
+    private static final int MAX_SCORE = 10;
 
     private boolean pipePassed = false;
     Bird bird;
     Obstacle obstacle;
     ArrayList<Rectangle> obstacles = new ArrayList<>();
+    ScoreManager scoreManager = ScoreManager.getInstance();
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        bird = new Bird(deltaY, jump, rectangleBird);
+        bird = new Bird(deltaY, JUMP, rectangleBird);
         obstacle = new Obstacle(anchorPane, 400, 600);;
         gameLoop = new AnimationTimer() {
             @Override
@@ -52,13 +63,28 @@ public class Controller implements Initializable {
                 update();
             }
         };
+        setupScoreListener();
         load();
         gameLoop.start();
     }
 
+    private void setupScoreListener()
+    {
+        ScoreManager.getInstance().addListener(new ScoreListener() {
+            @Override
+            public void onScoreIncreased(int score)
+            {
+                if (interval > MIN_INTERVAL)
+                {
+                    interval -= INTERVAL_DECREMENT;
+                    System.out.println("Interval " + interval);
+                }
+            }
+        });
+    }
 
     public void keyPressed(KeyEvent keyEvent) {
-        System.out.println("SPACE");
+        //System.out.println("SPACE");
         if(keyEvent.getCode() == KeyCode.SPACE)
         {
             bird.fly();
@@ -70,7 +96,7 @@ public class Controller implements Initializable {
     public void load()
     {
         obstacles.addAll(obstacle.createObstacles());
-        scoreText.setText("Score: " + scoreVal);
+        scoreText.setText("Score: " + scoreManager.getScore());
     }
 
 
@@ -81,25 +107,25 @@ public class Controller implements Initializable {
         bird.move(deltaY * gravity);
 
         obstacle.moveObstacles(obstacles);
-        if(time % 250 == 0)
+        if(time % MIN_INTERVAL == 0)
         {
             System.out.println("MOVE");
             obstacles.addAll(obstacle.createObstacles());
             pipePassed = false;
         }
 
-        if (!pipePassed && rectangleBird.getX() + rectangleBird.getLayoutX() > obstacles.getFirst().getX() + obstacles.getFirst().getLayoutX())
+        if ((!pipePassed && (rectangleBird.getX() + rectangleBird.getLayoutX()) > (obstacles.getFirst().getX() + obstacles.getFirst().getLayoutX())))
         {
-            scoreVal++;
-            scoreText.setText("Score: " + scoreVal);
+            scoreManager.incrementScore();
+            scoreText.setText("Score: " + scoreManager.getScore());
             pipePassed = true;
+            System.out.println("SCORED");
         }
 
         if(obstacle.isDead(obstacles, rectangleBird, anchorPane)){
             resetBird();
             pipePassed = true;
         }
-
         gameOver();
     }
 
@@ -107,19 +133,23 @@ public class Controller implements Initializable {
     {
          rectangleBird.setY(0);
          anchorPane.getChildren().removeAll(obstacles);
+         obstacles.removeAll(obstacles);
          obstacles.clear();
          time = 0;
          gravity = 0;
-         bird = new Bird(deltaY, jump, rectangleBird);
-         scoreVal = 0;
-         scoreText.setText("Score: " + scoreVal);
+         bird = new Bird(deltaY, JUMP, rectangleBird);
+         scoreManager.resetScore();
+         scoreText.setText("Score: " + scoreManager.getScore());
          pipePassed = false;
+         interval = 250;
+         obstacle.setMovement(0.75);
+
     }
 
 
     private void gameOver()
     {
-        if (scoreVal >= 10)
+        if (scoreManager.getScore() >= MAX_SCORE)
         {
             gameLoop.stop();
             scoreText.setText("Game Over, You've Won!");
