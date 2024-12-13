@@ -34,17 +34,21 @@ public class Controller implements Initializable {
     private AnchorPane anchorPane;
     @FXML
     private Rectangle rectangleBird;
+    private Rectangle box;
 
 
     private double deltaY = 0.02;
     private int gravity = 0;
     private double time = 0;
-    private double interval = 350;
+    private double interval = MAX_INTERVAL;
 
-    private static final int INTERVAL_DECREMENT = 10;
+    private static final int INTERVAL_DECREMENT = 25;
     private final int JUMP = 20;
-    private static double MIN_INTERVAL = 150;
-    private static final int MAX_SCORE = 10;
+    private static double MAX_INTERVAL = 500;
+    private static double MIN_INTERVAL = 225;
+    private static final int MAX_SCORE = 15;
+    private static final int ANCHOR_PANE_WIDTH = 400;
+    private static final int ANCHOR_PANE_HEIGHT = 600;
 
     private boolean pipePassed = false;
     Bird bird;
@@ -56,7 +60,7 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         bird = new Bird(deltaY, JUMP, rectangleBird);
-        obstacle = new Obstacle(anchorPane, 400, 600);;
+        obstacle = new Obstacle(anchorPane, ANCHOR_PANE_WIDTH, ANCHOR_PANE_HEIGHT);;
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -76,7 +80,7 @@ public class Controller implements Initializable {
             {
                 if (interval > MIN_INTERVAL)
                 {
-                    interval -= INTERVAL_DECREMENT;
+                    interval = interval - INTERVAL_DECREMENT;
                     System.out.println("Interval " + interval);
                 }
             }
@@ -107,25 +111,26 @@ public class Controller implements Initializable {
         bird.move(deltaY * gravity);
 
         obstacle.moveObstacles(obstacles);
-        if(time % MIN_INTERVAL == 0)
+        if(time % interval == 0)
         {
-            System.out.println("MOVE");
-            obstacles.addAll(obstacle.createObstacles());
+            System.out.println("ADD OBSTACLES");
+            load();
             pipePassed = false;
         }
 
-        if ((!pipePassed && (rectangleBird.getX() + rectangleBird.getLayoutX()) > (obstacles.getFirst().getX() + obstacles.getFirst().getLayoutX())))
-        {
-            scoreManager.incrementScore();
-            scoreText.setText("Score: " + scoreManager.getScore());
-            pipePassed = true;
-            System.out.println("SCORED");
+        for (Rectangle o : obstacles) {
+            if ((!pipePassed && (rectangleBird.getX() + rectangleBird.getLayoutX()) > (o.getX() + o.getLayoutX()))) {
+                scoreManager.incrementScore();
+                scoreText.setText("Score: " + scoreManager.getScore());
+                pipePassed = true;
+                System.out.println("SCORED");
+            }
         }
-
         if(obstacle.isDead(obstacles, rectangleBird, anchorPane)){
             resetBird();
             pipePassed = true;
         }
+
         gameOver();
     }
 

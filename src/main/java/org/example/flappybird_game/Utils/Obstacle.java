@@ -19,16 +19,15 @@ public class Obstacle extends Collision {
     private double anchorPaneWidth;
     private double anchorPaneHeight;
     ScoreManager scoreManager;
-    public double movement = 0.75;
+    public double movement = 1;
     private static final int PIPE_WIDTH = 25;
     private static final double PIPE_SPACE = 200;
-    public static final double MAX_MOVEMENT = 2;
-    private static final double MOVEMENT_INCREMENT = 0.15;
+    public static final double MAX_MOVEMENT = 3.5;
+    private static final double MOVEMENT_INCREMENT = 0.35;
     private static final int PIPE_MIN_HEIGHT = 50;
     private static final int PIPE_MAX_HEIGHT = 300;
     private static final int DYNAMIC_PIPE_WIDTH = 10;
     private static final int DYNAMIC_PIPE_SPACE = 20;
-
 
     public Obstacle(AnchorPane anchorPane, double anchorPaneWidth, double anchorPaneHeight) {
         this.anchorPane = anchorPane;
@@ -79,7 +78,6 @@ public class Obstacle extends Collision {
 
     public void moveObstacles(ArrayList<Rectangle> obstacles) {
         Iterator<Rectangle> iterator = obstacles.iterator();
-
         while (iterator.hasNext()) {
             Rectangle obstacle = iterator.next();
                 moveShape(obstacle, -movement);
@@ -92,12 +90,12 @@ public class Obstacle extends Collision {
 
     }
 
-
     private void moveShape(Rectangle obstacle, double deltaX)
     {
         obstacle.setX(obstacle.getX() + deltaX);
         //System.out.println("MOVED SHAPE");
     }
+
 
     public boolean isDead(ArrayList<Rectangle> obstacles, Rectangle bird, AnchorPane anchorPane)
     {

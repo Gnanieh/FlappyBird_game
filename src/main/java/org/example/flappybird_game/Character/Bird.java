@@ -22,6 +22,9 @@ public class Bird {
         this.bird.setStyle("-fx-fill: linear-gradient(to top, darkmagenta, magenta)");
     }
 
+    public Bird() {
+    }
+
     public void fly()
     {
         deltaY = -jump;
@@ -37,6 +40,5 @@ public class Bird {
     {
         bird.setY(bird.getY() + deltaY);
     }
-//pridetų kokių nors power up'ų/ar ko nors panašaus kur būtų galima naudoti polimorfizmą. (game mechanics)
     
 }
