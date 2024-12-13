@@ -19,10 +19,11 @@ public class Obstacle extends Collision {
     private double anchorPaneWidth;
     private double anchorPaneHeight;
     ScoreManager scoreManager;
-    public double movement = 1;
+    public double movement = MIN_MOVEMENT;
     private static final int PIPE_WIDTH = 25;
     private static final double PIPE_SPACE = 200;
     public static final double MAX_MOVEMENT = 3.5;
+    private static final double MIN_MOVEMENT = 1;
     private static final double MOVEMENT_INCREMENT = 0.35;
     private static final int PIPE_MIN_HEIGHT = 50;
     private static final int PIPE_MAX_HEIGHT = 300;
@@ -45,6 +46,11 @@ public class Obstacle extends Collision {
                     movement += MOVEMENT_INCREMENT;
                     System.out.println("Movement increased: " + movement);
                 }
+            }
+
+            @Override
+            public void onScoreReset() {
+                movement = MIN_MOVEMENT;
             }
         });
     }

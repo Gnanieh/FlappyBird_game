@@ -40,7 +40,9 @@ public class ScoreManager {
 
     public void resetScore() {
         score = 0;
-        notifyListeners();
+        for (ScoreListener listener : listeners) {
+            listener.onScoreReset();
+        }
     }
 
     public void addListener(ScoreListener listener) {
@@ -51,6 +53,7 @@ public class ScoreManager {
         for (ScoreListener listener : listeners) {
             listener.onScoreIncreased(score);
         }
+
     }
 
 }

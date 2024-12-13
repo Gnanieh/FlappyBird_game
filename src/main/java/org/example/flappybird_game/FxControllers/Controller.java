@@ -84,6 +84,11 @@ public class Controller implements Initializable {
                     System.out.println("Interval " + interval);
                 }
             }
+
+            @Override
+            public void onScoreReset() {
+                interval = MAX_INTERVAL;
+            }
         });
     }
 
@@ -146,8 +151,6 @@ public class Controller implements Initializable {
          scoreManager.resetScore();
          scoreText.setText("Score: " + scoreManager.getScore());
          pipePassed = false;
-         interval = 250;
-         obstacle.setMovement(0.75);
 
     }
 
